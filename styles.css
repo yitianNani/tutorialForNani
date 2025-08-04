@@ -46,7 +46,7 @@ body {
     width: 100vw;
     height: 100vh;
     z-index: 1;
-    pointer-events: none;
+    pointer-events: auto;
 }
 
 /* 響應式設計 */
