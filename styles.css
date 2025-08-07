@@ -33,15 +33,49 @@ body {
 .rainbow-text {
     font-size: clamp(3rem, 10vw, 8rem);
     font-weight: bold;
-    background: linear-gradient(270deg, #ff0000, #ff9900, #ffff00, #33ff00, #00ffff, #3300ff, #ff00cc, #ff0000);
+    background: linear-gradient(270deg, #ff0000, #ff9900, #ffff00, #00ff00, #00ffff, #3300ff, #ff00cc, #ff0000);
     background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     color: transparent;
     animation: rainbow 3s linear infinite, float 3s ease-in-out infinite;
-    text-shadow: 0 0 8px #fff, 0 0 16px #fff, 0 0 32px #ff00cc, 0 0 64px #3300ff;
+    text-shadow: 0 0 8px #fff, 0 0 16px #00ff00, 0 0 32px #00ff00, 0 0 64px #00ff00;
     user-select: none;
+    position: relative;
+    padding: 10px;
+    border: 3px solid transparent;
+    border-radius: 15px;
+    background-clip: padding-box;
+}
+
+.rainbow-text::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(45deg, #00ff00, #00cc00, #00ff00, #66ff66);
+    background-size: 400% 400%;
+    animation: greenBorder 3s ease-in-out infinite;
+    border-radius: 18px;
+    z-index: -1;
+}
+
+.rainbow-text::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 0, 0.3) 50%, transparent 70%);
+    background-size: 200% 200%;
+    animation: greenGlow 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+    border-radius: 15px;
 }
 
 @keyframes rainbow {
@@ -59,6 +93,24 @@ body {
     }
     50% {
         transform: translateY(-10px);
+    }
+}
+
+@keyframes greenGlow {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes greenBorder {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
     }
 }
 
