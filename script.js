@@ -77,9 +77,12 @@ class Particle {
             x: (Math.random() - 0.5) * 6,
             y: (Math.random() - 0.5) * 6
         };
-        this.size = Math.random() * 8 + 4; // 增大粒子尺寸
+        this.size = Math.random() * 24 + 24; // 增大 emoji 尺寸
         this.rotation = Math.random() * Math.PI * 2;
         this.rotationSpeed = (Math.random() - 0.5) * 0.2;
+        // 新增：隨機選一個 emoji
+        const emojis = ['😢', '😡', '😞', '😭', '😠', '😔'];
+        this.emoji = emojis[Math.floor(Math.random() * emojis.length)];
     }
 
     update() {
@@ -95,51 +98,11 @@ class Particle {
         ctx.globalAlpha = this.alpha;
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
-        
-        // 插畫風格的粒子 - 使用多邊形而不是圓形
-        const sides = Math.floor(Math.random() * 3) + 3; // 3-5邊形
-        ctx.beginPath();
-        
-        if (sides === 3) {
-            // 三角形
-            ctx.moveTo(0, -this.size);
-            ctx.lineTo(-this.size * 0.866, this.size * 0.5);
-            ctx.lineTo(this.size * 0.866, this.size * 0.5);
-        } else if (sides === 4) {
-            // 菱形
-            ctx.moveTo(0, -this.size);
-            ctx.lineTo(this.size, 0);
-            ctx.lineTo(0, this.size);
-            ctx.lineTo(-this.size, 0);
-        } else {
-            // 五角星
-            for (let i = 0; i < sides; i++) {
-                const angle = (i * Math.PI * 2) / sides;
-                const radius = i % 2 === 0 ? this.size : this.size * 0.5;
-                const x = Math.cos(angle) * radius;
-                const y = Math.sin(angle) * radius;
-                
-                if (i === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
-            }
-        }
-        
-        ctx.closePath();
-        
-        // 使用更柔和的顏色
-        const saturation = 60 + Math.random() * 30; // 60-90% 飽和度
-        const lightness = 60 + Math.random() * 20; // 60-80% 亮度
-        ctx.fillStyle = `hsl(${this.hue}, ${saturation}%, ${lightness}%)`;
-        ctx.fill();
-        
-        // 添加邊框效果
-        ctx.strokeStyle = `hsl(${this.hue}, ${saturation}%, ${lightness - 20}%)`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-        
+        // 用 emoji 畫粒子
+        ctx.font = `${this.size}px serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.emoji, 0, 0);
         ctx.restore();
     }
 }
