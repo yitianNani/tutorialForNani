@@ -30,6 +30,29 @@ body {
     user-select: none;
 }
 
+.rainbow-text {
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: bold;
+    background: linear-gradient(270deg, #ff0000, #ff9900, #ffff00, #33ff00, #00ffff, #3300ff, #ff00cc, #ff0000);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    animation: rainbow 3s linear infinite, float 3s ease-in-out infinite;
+    text-shadow: 0 0 8px #fff, 0 0 16px #fff, 0 0 32px #ff00cc, 0 0 64px #3300ff;
+    user-select: none;
+}
+
+@keyframes rainbow {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
 @keyframes float {
     0%, 100% {
         transform: translateY(0px);
