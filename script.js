@@ -12,8 +12,34 @@ class Firework {
         };
         this.particles = [];
         this.alive = true;
-        // 使用更柔和的顏色範圍
-        this.hue = Math.random() * 60 + 15; // 15-75度，偏向暖色調
+        // 根據選擇的顏色主題設置顏色
+        this.colorTheme = this.getColorTheme();
+        this.hue = this.colorTheme.baseHue;
+    }
+
+    getColorTheme() {
+        if (selectedColorTheme === 'random') {
+            // 隨機選擇顏色主題
+            const themes = [
+                { name: '暖色調', baseHue: Math.random() * 60 + 15, variation: 30 },
+                { name: '冷色調', baseHue: Math.random() * 60 + 200, variation: 30 },
+                { name: '紫色系', baseHue: Math.random() * 40 + 260, variation: 40 },
+                { name: '綠色系', baseHue: Math.random() * 60 + 100, variation: 30 },
+                { name: '彩虹色', baseHue: Math.random() * 360, variation: 60 },
+                { name: '金色', baseHue: Math.random() * 20 + 45, variation: 20 },
+                { name: '粉色系', baseHue: Math.random() * 30 + 320, variation: 30 },
+                { name: '藍色系', baseHue: Math.random() * 40 + 220, variation: 30 }
+            ];
+            return themes[Math.floor(Math.random() * themes.length)];
+        } else {
+            // 使用選擇的顏色主題
+            const theme = colorThemes[selectedColorTheme];
+            return {
+                name: theme.name,
+                baseHue: theme.baseHue || Math.random() * 360,
+                variation: theme.variation
+            };
+        }
     }
 
     update() {
@@ -31,10 +57,14 @@ class Firework {
     explode() {
         const particleCount = 40; // 稍微減少粒子數量，但每個粒子更大
         for (let i = 0; i < particleCount; i++) {
+            // 在基礎色調附近變化，創造更豐富的顏色效果
+            const hueVariation = (Math.random() - 0.5) * this.colorTheme.variation;
+            const particleHue = (this.hue + hueVariation + 360) % 360; // 確保色相在0-360範圍內
+            
             this.particles.push(new Particle(
                 this.x,
                 this.y,
-                this.hue + (Math.random() - 0.5) * 30 // 在基礎色調附近變化
+                particleHue
             ));
         }
     }
@@ -129,14 +159,14 @@ class Particle {
         
         ctx.closePath();
         
-        // 使用更柔和的顏色
-        const saturation = 60 + Math.random() * 30; // 60-90% 飽和度
-        const lightness = 60 + Math.random() * 20; // 60-80% 亮度
+        // 使用更豐富的顏色變化
+        const saturation = 70 + Math.random() * 25; // 70-95% 飽和度
+        const lightness = 55 + Math.random() * 25; // 55-80% 亮度
         ctx.fillStyle = `hsl(${this.hue}, ${saturation}%, ${lightness}%)`;
         ctx.fill();
         
-        // 添加邊框效果
-        ctx.strokeStyle = `hsl(${this.hue}, ${saturation}%, ${lightness - 20}%)`;
+        // 添加邊框效果，使用稍深的顏色
+        ctx.strokeStyle = `hsl(${this.hue}, ${saturation}%, ${lightness - 25}%)`;
         ctx.lineWidth = 1;
         ctx.stroke();
         
@@ -157,14 +187,56 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-// 煙火陣列
+// 全局變量
 let fireworks = [];
+let lastAutoFirework = 0; // 記錄上次自動發射煙火的時間
+let selectedColorTheme = 'random'; // 當前選擇的顏色主題
+
+// 顏色主題配置
+const colorThemes = {
+    random: { name: '隨機', baseHue: null, variation: 60 },
+    warm: { name: '暖色調', baseHue: Math.random() * 60 + 15, variation: 30 },
+    cool: { name: '冷色調', baseHue: Math.random() * 60 + 200, variation: 30 },
+    purple: { name: '紫色系', baseHue: Math.random() * 40 + 260, variation: 40 },
+    green: { name: '綠色系', baseHue: Math.random() * 60 + 100, variation: 30 },
+    rainbow: { name: '彩虹色', baseHue: Math.random() * 360, variation: 60 },
+    gold: { name: '金色', baseHue: Math.random() * 20 + 45, variation: 20 },
+    pink: { name: '粉色系', baseHue: Math.random() * 30 + 320, variation: 30 }
+};
+
+// 初始化顏色控制面板
+function initColorPanel() {
+    const colorButtons = document.querySelectorAll('.color-btn');
+    
+    colorButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // 移除所有按鈕的active類
+            colorButtons.forEach(btn => btn.classList.remove('active'));
+            // 添加當前按鈕的active類
+            button.classList.add('active');
+            
+            // 更新選擇的顏色主題
+            selectedColorTheme = button.dataset.theme;
+            console.log('選擇顏色主題:', selectedColorTheme);
+        });
+    });
+    
+    // 默認選擇隨機顏色
+    document.querySelector('[data-theme="random"]').classList.add('active');
+}
 
 // 動畫循環
 function animate() {
     // 使用更柔和的背景清除效果
     ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 自動發射煙火（每2-4秒一次）
+    const now = Date.now();
+    if (now - lastAutoFirework > Math.random() * 2000 + 2000) { // 2-4秒隨機間隔
+        autoFirework();
+        lastAutoFirework = now;
+    }
 
     // 更新和繪製煙火
     fireworks.forEach((firework, index) => {
@@ -183,6 +255,21 @@ function animate() {
     }
 
     requestAnimationFrame(animate);
+}
+
+// 自動發射煙火函數
+function autoFirework() {
+    // 隨機選擇目標位置
+    const targetX = Math.random() * canvas.width;
+    const targetY = Math.random() * canvas.height * 0.6; // 限制在上方60%區域
+    
+    // 從底部隨機位置發射
+    const startX = Math.random() * canvas.width;
+    const startY = canvas.height;
+    
+    const newFirework = new Firework(startX, startY, targetX, targetY);
+    fireworks.push(newFirework);
+    console.log('自動發射煙火，目前煙火數量:', fireworks.length);
 }
 
 // 點擊事件處理
@@ -205,6 +292,9 @@ function handleClick(e) {
 // 在 canvas 和 body 上都添加點擊事件
 canvas.addEventListener('click', handleClick);
 document.body.addEventListener('click', handleClick);
+
+// 初始化顏色控制面板
+initColorPanel();
 
 // 開始動畫
 animate(); 

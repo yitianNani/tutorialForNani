@@ -54,10 +54,90 @@ body {
     .hello-text {
         font-size: clamp(2rem, 8vw, 4rem);
     }
+    
+    .color-panel {
+        padding: 10px;
+    }
+    
+    .color-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .color-btn {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
 }
 
 @media (max-width: 480px) {
     .hello-text {
         font-size: clamp(1.5rem, 6vw, 3rem);
     }
+    
+    .color-panel {
+        padding: 8px;
+    }
+    
+    .color-buttons {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+    
+    .color-btn {
+        font-size: 11px;
+        padding: 6px 10px;
+    }
+}
+
+/* 顏色控制面板樣式 */
+.color-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    max-width: 300px;
+}
+
+.color-panel h3 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+    font-weight: 600;
+}
+
+.color-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.color-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.color-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.color-btn.active {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.8);
 } 
