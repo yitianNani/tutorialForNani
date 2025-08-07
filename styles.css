@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: white;
     overflow: hidden;
     cursor: pointer;
 }
@@ -24,8 +24,8 @@ body {
 .hello-text {
     font-size: clamp(3rem, 10vw, 8rem);
     font-weight: bold;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    color: black;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     animation: float 3s ease-in-out infinite;
     user-select: none;
 }
